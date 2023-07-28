@@ -13,7 +13,22 @@ table_enum! {
     }
 }
 
+table_enum! {
+    pub enum BinaryOp(text: &'static str, precedence: i32, right_assoc: bool) {
+        Add("+", 10, false),
+        Sub("-", 10, false),
+        Mul("*", 20, false),
+        Div("/", 20, false),
+        Pow("**", 30, true),
+    }
+}
+
 #[test]
 fn venus_mass() {
     assert_eq!(Planets::Venus.mass(), 4.869e+24);
+}
+
+#[test]
+fn add_text() {
+    assert_eq!(BinaryOp::Add.text(), "+");
 }

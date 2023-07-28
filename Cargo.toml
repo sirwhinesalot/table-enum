@@ -6,6 +6,9 @@ description = "A rust proc_macro "
 keywords = ["enum", "table", "constant", "const", "variant"]
 edition = "2021"
 
+[lib]
+doctest = false
+
 [dependencies]
 table-enum-macro = { path = "table-enum-macro" }
 
