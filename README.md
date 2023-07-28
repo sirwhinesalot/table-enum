@@ -1,6 +1,6 @@
 # table-enum
 
-![Icon](table-enum-icon.svg)
+![Icon](https://raw.githubusercontent.com/sirwhinesalot/table-enum/main/table-enum-icon.svg)
 
 A convenient rust macro to create enums with associated constant data.
 It lets you associate constant values to enum variants, similar to how [enums work in Java](https://docs.oracle.com/javase/tutorial/java/javaOO/enum.html), 
