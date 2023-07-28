@@ -1,0 +1,14 @@
+[package]
+name = "table_enum"
+version = "0.1.0"
+authors = ["César Santos <cesar.santos.1990@gmail.com>"]
+description = "A rust proc_macro "
+keywords = ["enum", "table", "constant", "const", "variant"]
+edition = "2021"
+
+[dependencies]
+table-enum-macro = { path = "table-enum-macro" }
+
+[workspace]
+members = ["table-enum-macro", "table-enum-core"]
+
