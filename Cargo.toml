@@ -2,7 +2,7 @@
 name = "table_enum"
 version = "0.1.0"
 authors = ["César Santos <cesar.santos.1990@gmail.com>"]
-license-file = "LICENSE"
+license = "MIT"
 readme = "README.md"
 description = "A convenient rust macro to create enums with associated constant data (note: this is different from normal rust enums which are really tagged unions)"
 homepage = "https://github.com/sirwhinesalot/table-enum"
