@@ -2,15 +2,20 @@
 name = "table_enum"
 version = "0.1.0"
 authors = ["César Santos <cesar.santos.1990@gmail.com>"]
-description = "A rust proc_macro "
+license-file = "LICENSE"
+readme = "README.md"
+description = "A convenient rust macro to create enums with associated constant data (note: this is different from normal rust enums which are really tagged unions)"
+homepage = "https://github.com/sirwhinesalot/table-enum"
+repository = "https://github.com/sirwhinesalot/table-enum"
 keywords = ["enum", "table", "constant", "const", "variant"]
 edition = "2021"
+exclude = ["table-enum-icon.svg"]
 
 [lib]
 doctest = false
 
 [dependencies]
-table-enum-macro = { path = "table-enum-macro" }
+table-enum-macro = { path = "table-enum-macro", version = "0.1.0" }
 
 [workspace]
 members = ["table-enum-macro", "table-enum-core"]
