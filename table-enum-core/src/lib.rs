@@ -6,13 +6,11 @@ use proc_macro2::TokenStream;
 use syn::parse::{Parse, ParseStream};
 use syn::punctuated::Punctuated;
 use syn::token::Comma;
-use syn::{
-    parse2, parse_quote, Expr, ExprMatch, Field, Fields, Ident, ImplItemFn, Token, Variant,
-    Visibility,
-};
+use syn::{parse2, parse_quote, Expr, ExprMatch, Field, Fields, Ident, ImplItemFn, Token, Variant, Visibility, Attribute};
 
 #[derive(Debug)]
 struct TableEnum {
+    attrs: Vec<Attribute>,
     visibility: Visibility,
     ident: Ident,
     types: Punctuated<Field, Comma>,
@@ -40,6 +38,7 @@ impl Parse for TableEnumVariant {
 
 impl Parse for TableEnum {
     fn parse(input: ParseStream) -> syn::Result<Self> {
+        let attrs = input.call(Attribute::parse_outer)?;
         let lookahead = input.lookahead1();
         let visibility: Visibility = if lookahead.peek(Token![pub]) {
             input.parse()?
@@ -55,6 +54,7 @@ impl Parse for TableEnum {
         syn::braced!(content in input);
         let members = content.parse_terminated(TableEnumVariant::parse, Token![,])?;
         Ok(TableEnum {
+            attrs,
             visibility,
             ident: name,
             types,
@@ -68,6 +68,7 @@ pub fn table_enum_core(input: TokenStream) -> TokenStream {
         Ok(ast) => ast,
         Err(err) => return err.to_compile_error(),
     };
+    let enum_attrs = table_enum.attrs;
     let enum_visibility = table_enum.visibility;
     let enum_name = table_enum.ident;
     let mut enum_variants = Punctuated::<Variant, Comma>::new();
@@ -105,6 +106,7 @@ pub fn table_enum_core(input: TokenStream) -> TokenStream {
         getters.push(getter);
     }
     parse_quote!(
+        #(#enum_attrs)*
         #enum_visibility enum #enum_name {
             #enum_variants
         }

@@ -1,6 +1,7 @@
 use table_enum::table_enum;
 
 table_enum! {
+    #[derive(Debug)]
     pub enum Planets(mass: f64, radius: f64) {
         Mercury (3.303e+23, 2.4397e6),
         Venus   (4.869e+24, 6.0518e6),

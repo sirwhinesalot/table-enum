@@ -10,7 +10,7 @@ use table_enum_core::table_enum_core;
 ///
 /// # Example:
 ///
-/// ```rust
+/// ```ignore
 /// use table_enum::table_enum;
 ///
 /// table_enum! {
