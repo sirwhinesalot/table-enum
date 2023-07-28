@@ -3,6 +3,11 @@ name = "table-enum-core"
 version = "0.1.0"
 edition = "2021"
 authors = ["César Santos <cesar.santos.1990@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+description = "You are probably looking for the table-enum crate, which wraps this crate and is much more ergonomic to use."
+homepage = "https://github.com/sirwhinesalot/table-enum"
+repository = "https://github.com/sirwhinesalot/table-enum"
 
 [dependencies]
 quote = "1.0.29"
