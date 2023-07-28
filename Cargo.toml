@@ -1,6 +1,6 @@
 [package]
 name = "table_enum"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["César Santos <cesar.santos.1990@gmail.com>"]
 license = "MIT"
 readme = "README.md"

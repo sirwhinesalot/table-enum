@@ -17,6 +17,8 @@ This is different from how enums are typically used in Rust, which are actually 
 An example where non-tagged-union[^1] enums are very useful is compiler or interpreter development. For example:
 
 ```rust
+use table_enum::table_enum;
+
 table_enum! {
     enum BinaryOp(text: &'static str, precedence: i32, right_assoc: bool) {
         Add("+", 10, false),
@@ -66,7 +68,7 @@ impl BinaryOp {
             ...
         }
     }
-    const fn right_assoc(&self) -> i32 {
+    const fn right_assoc(&self) -> bool {
         match self {
             BinaryOp::Add => false,
             BinaryOp::Sub => false,
