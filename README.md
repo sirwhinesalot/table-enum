@@ -1,5 +1,9 @@
 # table-enum
 
+<p>
+  <a href="https://crates.io/crates/table_enum"><img alt="" src="https://img.shields.io/crates/d/table_enum?label=crates.io" /></a>
+</p>
+
 ![Icon](https://raw.githubusercontent.com/sirwhinesalot/table-enum/main/table-enum-icon.svg)
 
 A convenient rust macro to create enums with associated constant data.
