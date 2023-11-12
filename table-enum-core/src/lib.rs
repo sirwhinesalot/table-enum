@@ -8,6 +8,13 @@ use syn::punctuated::Punctuated;
 use syn::token::Comma;
 use syn::{parse2, parse_quote, Expr, ExprMatch, Field, Fields, Ident, ImplItemFn, Token, Variant, Visibility, Attribute};
 
+#[derive(PartialEq, Eq)]
+enum FieldKind {
+    Normal,
+    Option,
+    Default,
+}
+
 #[derive(Debug)]
 struct TableEnum {
     attrs: Vec<Attribute>,
@@ -89,17 +96,50 @@ pub fn table_enum_core(input: TokenStream) -> TokenStream {
         .collect::<Vec<Ident>>();
     let mut getters = Vec::<ImplItemFn>::new();
     for i in 0..table_enum.types.len() {
-        let t = &table_enum.types[i];
-        let getter_name = t.ident.clone().unwrap();
-        let getter_type = &t.ty;
-        let variant_values = table_enum.members.iter().map(|v| v.values[i].clone());
+        let f: &Field = &table_enum.types[i];
+        let f_type = f.ty.clone();
+        let mut field_kind = FieldKind::Normal;
+        for a in &f.attrs {
+            if let Some(segment) = a.path().segments.first() {
+                let attribute_name = segment.ident.to_string();
+                if attribute_name == "option" {
+                    field_kind = FieldKind::Option;
+                    break;
+                }
+                else if attribute_name == "default" {
+                    field_kind = FieldKind::Default;
+                    break;
+                }
+            }
+            return parse_quote!( compile_error!("unknown attribute, only #[option] and #[default] is supported") );
+        }
+        let getter_name = f.ident.clone().unwrap();
+        let getter_type = if field_kind == FieldKind::Option { parse_quote!( Option<#f_type> )} else { f_type.clone() };
+        let variant_values = table_enum.members.iter().map(|v| {
+            let value = v.values[i].clone();
+            if value == parse_quote!( _ ) {
+                match field_kind {
+                    FieldKind::Option => parse_quote!( None ),
+                    FieldKind::Default => parse_quote!( #f_type::default() ),
+                    _ => return parse_quote!( compile_error!("Usage of `_` is valid for #[option] and #[default] fields") ),
+                }
+            }
+            else if field_kind == FieldKind::Option {
+                parse_quote!( Some(#value) )
+            }
+            else {
+                value
+            }
+        });
         let match_block: ExprMatch = parse_quote!(
             match self {
                 #(#enum_name::#variant_names => #variant_values,)*
             }
         );
+        // Default::default() is not const so we cannot make a "const fn"
+        let const_fn: TokenStream = if field_kind == FieldKind::Default { parse_quote!( fn ) } else {parse_quote!( const fn) };
         let getter: ImplItemFn = parse_quote!(
-            #enum_visibility const fn #getter_name(&self) -> #getter_type {
+            #enum_visibility #const_fn #getter_name(&self) -> #getter_type {
                 #match_block
             }
         );

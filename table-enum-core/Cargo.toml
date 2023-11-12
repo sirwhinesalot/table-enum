@@ -1,6 +1,6 @@
 [package]
 name = "table-enum-core"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 authors = ["César Santos <cesar.santos.1990@gmail.com>"]
 license = "MIT"

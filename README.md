@@ -24,11 +24,11 @@ An example where non-tagged-union[^1] enums are very useful is compiler or inter
 use table_enum::table_enum;
 
 table_enum! {
-    enum BinaryOp(text: &'static str, precedence: i32, right_assoc: bool) {
-        Add("+", 10, false),
-        Sub("-", 10, false),
-        Mul("*", 20, false),
-        Div("/", 20, false),
+    enum BinaryOp(text: &'static str, precedence: i32, #[default] right_assoc: bool) {
+        Add("+", 10, _),
+        Sub("-", 10, _),
+        Mul("*", 20, _),
+        Div("/", 20, _),
         Pow("**", 30, true),
         ...
     }
@@ -72,12 +72,13 @@ impl BinaryOp {
             ...
         }
     }
-    const fn right_assoc(&self) -> bool {
+    // cannot be const because Default::default() is not const
+    fn right_assoc(&self) -> bool {
         match self {
-            BinaryOp::Add => false,
-            BinaryOp::Sub => false,
-            BinaryOp::Mul => false,
-            BinaryOp::Div => false,
+            BinaryOp::Add => bool::default(),
+            BinaryOp::Sub => bool::default(),
+            BinaryOp::Mul => bool::default(),
+            BinaryOp::Div => bool::default(),
             BinaryOp::Pow => true,
             ...
         }
@@ -85,6 +86,12 @@ impl BinaryOp {
 }
 ```
 
+## Changelog
+
+- 0.2.0: Added `#[option]` and`#[default]` attributes to the enum field declarations, see the documentation for more.
+- 0.1.0: First version
+
 ## Alternative Crates
 
-- [enum_assoc](https://crates.io/crates/enum-assoc): more powerful but less convenient.
+- [enum-assoc](https://crates.io/crates/enum-assoc): more powerful but less convenient.
+- [const-table](https://crates.io/crates/const-table): similar idea but as a derive macro. Honestly a better approach to the same problem.

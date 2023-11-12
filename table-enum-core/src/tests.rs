@@ -58,3 +58,56 @@ fn planets() {
     };
     assert_eq!(after.to_string(), expected.to_string());
 }
+
+#[test]
+fn option() {
+    let before = quote! {
+        pub enum BinaryOp(text: &'static str, #[option] precedence: i32, #[default] right_assoc: bool) {
+            Add("+", _, _),
+            Sub("-", _, _),
+            Mul("*", 20, _),
+            Div("/", 20, _),
+            Pow("**", 30, true),
+        }
+    };
+    let after = table_enum_core(before);
+    let expected = quote! {
+        pub enum BinaryOp {
+            Add,
+            Sub,
+            Mul,
+            Div,
+            Pow,
+        }
+        impl BinaryOp {
+            pub const fn text(&self) -> &'static str {
+                match self {
+                    BinaryOp::Add => "+",
+                    BinaryOp::Sub => "-",
+                    BinaryOp::Mul => "*",
+                    BinaryOp::Div => "/",
+                    BinaryOp::Pow => "**",
+                }
+            }
+            pub const fn precedence(&self) -> Option<i32> {
+                match self {
+                    BinaryOp::Add => None,
+                    BinaryOp::Sub => None,
+                    BinaryOp::Mul => Some(20),
+                    BinaryOp::Div => Some(20),
+                    BinaryOp::Pow => Some(30),
+                }
+            }
+            pub fn right_assoc(&self) -> bool {
+                match self {
+                    BinaryOp::Add => bool::default(),
+                    BinaryOp::Sub => bool::default(),
+                    BinaryOp::Mul => bool::default(),
+                    BinaryOp::Div => bool::default(),
+                    BinaryOp::Pow => true,
+                }
+            }
+        }
+    };
+    assert_eq!(after.to_string(), expected.to_string());
+}

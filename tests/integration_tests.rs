@@ -15,11 +15,11 @@ table_enum! {
 }
 
 table_enum! {
-    pub enum BinaryOp(text: &'static str, precedence: i32, right_assoc: bool) {
-        Add("+", 10, false),
-        Sub("-", 10, false),
-        Mul("*", 20, false),
-        Div("/", 20, false),
+    pub enum BinaryOp(text: &'static str, #[option] precedence: i32, #[default] right_assoc: bool) {
+        Add("+", _, _),
+        Sub("-", _, _),
+        Mul("*", 20, _),
+        Div("/", 20, _),
         Pow("**", 30, true),
     }
 }
@@ -31,5 +31,5 @@ fn venus_mass() {
 
 #[test]
 fn add_text() {
-    assert_eq!(BinaryOp::Add.text(), "+");
+    assert_eq!(BinaryOp::Pow.right_assoc(), true);
 }
