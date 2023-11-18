@@ -94,4 +94,4 @@ impl BinaryOp {
 ## Alternative Crates
 
 - [enum-assoc](https://crates.io/crates/enum-assoc): more powerful but less convenient.
-- [const-table](https://crates.io/crates/const-table): similar idea but as an attribute macro. Honestly a better approach to the same problem.
+- [const-table](https://crates.io/crates/const-table): similar idea but as an attribute macro. Honestly a better approach to the same problem syntax wise. Uses an Array of Structs layout instead of Struct of Arrays unfortunately.
