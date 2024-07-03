@@ -13,6 +13,7 @@ enum FieldKind {
     Normal,
     Option,
     Default,
+    Constructor,
 }
 
 #[derive(Debug)]
@@ -110,12 +111,16 @@ pub fn table_enum_core(input: TokenStream) -> TokenStream {
                     field_kind = FieldKind::Default;
                     break;
                 }
+                else if attribute_name == "constructor" {
+                    field_kind = FieldKind::Constructor;
+                    break;
+                }
             }
-            return parse_quote!( compile_error!("unknown attribute, only #[option] and #[default] is supported") );
+            return parse_quote!( compile_error!("unknown attribute, only #[option], #[default], and #[constructor] are supported") );
         }
         let getter_name = f.ident.clone().unwrap();
         let getter_type = if field_kind == FieldKind::Option { parse_quote!( Option<#f_type> )} else { f_type.clone() };
-        let variant_values = table_enum.members.iter().map(|v| {
+        let variant_values: Vec<_> = table_enum.members.iter().map(|v| {
             let value = v.values[i].clone();
             if value == parse_quote!( _ ) {
                 match field_kind {
@@ -130,7 +135,7 @@ pub fn table_enum_core(input: TokenStream) -> TokenStream {
             else {
                 value
             }
-        });
+        }).collect();
         let match_block: ExprMatch = parse_quote!(
             match self {
                 #(#enum_name::#variant_names => #variant_values,)*
@@ -144,6 +149,20 @@ pub fn table_enum_core(input: TokenStream) -> TokenStream {
             }
         );
         getters.push(getter);
+        if field_kind == FieldKind::Constructor {
+            let match_block: ExprMatch = parse_quote!(
+                match #getter_name {
+                    #(#variant_values => Some(#enum_name::#variant_names),)*
+                    _ => None
+                }
+            );
+            let constructor = parse_quote!(
+                #enum_visibility fn new(#getter_name: #f_type) -> Option<Self> {
+                    #match_block
+                }
+            );
+            getters.push(constructor)
+        }
     }
     parse_quote!(
         #(#enum_attrs)*

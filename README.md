@@ -24,7 +24,7 @@ An example where non-tagged-union[^1] enums are very useful is compiler or inter
 use table_enum::table_enum;
 
 table_enum! {
-    enum BinaryOp(text: &'static str, precedence: i32, #[default] right_assoc: bool) {
+    enum BinaryOp(#[constructor] text: &'static str, precedence: i32, #[default] right_assoc: bool) {
         Add("+", 10, _),
         Sub("-", 10, _),
         Mul("*", 20, _),
@@ -62,6 +62,17 @@ impl BinaryOp {
             ...
         }
     }
+    pub fn new(text: &'static str) -> Option<Self> {
+        match text {
+            "+" => Some(BinaryOp::Add),
+            "-" => Some(BinaryOp::Sub),
+            "*" => Some(BinaryOp::Mul),
+            "/" => Some(BinaryOp::Div),
+            "**" => Some(BinaryOp::Pow),
+            ...
+            _ => None
+        }
+    }
     const fn precedence(&self) -> i32 {
         match self {
             BinaryOp::Add => 10,
@@ -86,8 +97,11 @@ impl BinaryOp {
 }
 ```
 
+Note that no more than one field can have the `#[constructor]` attribute. If a field has the `#[constructor]` attribute, that field must have different values for every enum tag.
+
 ## Changelog
 
+- 0.3.0: Added `#[constructor]` attribute.
 - 0.2.0: Added `#[option]` and`#[default]` attributes to the enum field declarations, see the documentation for more.
 - 0.1.0: First version
 
