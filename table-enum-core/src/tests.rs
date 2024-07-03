@@ -111,3 +111,44 @@ fn option() {
     };
     assert_eq!(after.to_string(), expected.to_string());
 }
+
+#[test]
+fn constructor() {
+    let before = quote! {
+        pub enum BinaryOp(#[constructor] text: &'static str) {
+            Add("+", _, _),
+            Sub("-", _, _),
+            Mul("*", 20, _),
+            Div("/", 20, _),
+        }
+    };
+    let after = table_enum_core(before);
+    let expected = quote! {
+        pub enum BinaryOp {
+            Add,
+            Sub,
+            Mul,
+            Div,
+        }
+        impl BinaryOp {
+            pub const fn text(&self) -> &'static str {
+                match self {
+                    BinaryOp::Add => "+",
+                    BinaryOp::Sub => "-",
+                    BinaryOp::Mul => "*",
+                    BinaryOp::Div => "/",
+                }
+            }
+            pub fn new(text: &'static str) -> Option<Self> {
+                match text {
+                    "+" => Some(BinaryOp::Add),
+                    "-" => Some(BinaryOp::Sub),
+                    "*" => Some(BinaryOp::Mul),
+                    "/" => Some(BinaryOp::Div),
+                    _ => None
+                }
+            }
+        }
+    };
+    assert_eq!(after.to_string(), expected.to_string());
+}

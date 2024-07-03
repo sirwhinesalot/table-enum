@@ -1,6 +1,6 @@
 [package]
 name = "table-enum-macro"
-version = "0.2.0"
+version = "0.3.0"
 edition = "2021"
 authors = ["César Santos <cesar.santos.1990@gmail.com>"]
 license = "MIT"
@@ -15,4 +15,4 @@ proc-macro = true
 [dependencies]
 proc-macro-error = "1.0.4"
 proc-macro2 = "1.0.64"
-table-enum-core = { path="../table-enum-core", version = "0.2.0" }
+table-enum-core = { path="../table-enum-core", version = "0.3.0" }

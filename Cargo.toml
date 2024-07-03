@@ -1,6 +1,6 @@
 [package]
 name = "table_enum"
-version = "0.2.0"
+version = "0.3.0"
 authors = ["César Santos <cesar.santos.1990@gmail.com>"]
 license = "MIT"
 readme = "README.md"
@@ -15,7 +15,7 @@ exclude = ["table-enum-icon.svg"]
 doctest = false
 
 [dependencies]
-table-enum-macro = { path = "table-enum-macro", version = "0.2.0" }
+table-enum-macro = { path = "table-enum-macro", version = "0.3.0" }
 
 [workspace]
 members = ["table-enum-macro", "table-enum-core"]

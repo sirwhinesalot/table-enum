@@ -28,14 +28,14 @@ use table_enum_core::table_enum_core;
 ///   println!("{}", BinaryOp.Add.text());
 /// }
 /// ```
-/// 
-/// There are two convenience attributes that can be added for each field:
-/// 
+///
+/// There are three convenience attributes that can be added for each field:
+///
 /// ```ignore
 /// use table_enum::table_enum;
 ///
 /// table_enum! {
-///     enum BinaryOp(text: &'static str, #[option] precedence: i32, #[default] right_assoc: bool) {
+///     enum BinaryOp(#[constructor] text: &'static str, #[option] precedence: i32, #[default] right_assoc: bool) {
 ///         Add("+", _, _),
 ///         Sub("-", _, _),
 ///         Mul("*", 20, _),
@@ -45,13 +45,17 @@ use table_enum_core::table_enum_core;
 ///     }
 /// }
 /// ```
-/// 
+///
 /// The `#[option]` convenience attribute lets you write the values directly but wraps them implicitly into `Some(value)`.
-/// If instead of a value you write `_`, it becomes `None`. 
+/// If instead of a value you write `_`, it becomes `None`.
 /// The return type when you invoke that field's getter is also changed to `Option<FieldType>`.
-/// 
+///
 /// The #[default] field works the same way but instead of an `Option` type, `_` maps to `Default::default()`.
 /// Because `Default::default()` is not `const fn`, neither is the generated function.
+///
+/// The #[constructor] attribute allows generation of the constructor (called `new`) that takes a value of the field's type
+/// and returns Option<EnumType>
+/// No more than one field can have this attribute. All values of this field must be different.
 pub fn table_enum(input: TokenStream) -> TokenStream {
     table_enum_core(input.into()).into()
 }
